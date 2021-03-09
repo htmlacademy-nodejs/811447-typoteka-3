@@ -1,0 +1,21 @@
+extends layout.pug
+
+block content
+  main
+    h1.visually-hidden Регистрация пользователя
+    section
+      .popup.popup--registration.popup--anti
+        a(class='popup__button button button--popup-close' aria-label='Закрыть окно')
+          | Закрыть
+          | окно
+        h2(class='popup__title') Войти
+        div(class='popup__form form form--log-in')
+          form(action='#' method='get')
+            div(class='form__field')
+              label
+                input(type='email' name='email' placeholder='Электронная почта' required='')
+            div(class='form__field')
+              label
+                input(type='password' name='password' placeholder='Пароль' required='')
+            p(class='form__error-message') Некоторая ошибка произошла, беда!
+            button(class='form__submit-btn form__submit-btn--log-in button button--colored' type='submit') Войти
