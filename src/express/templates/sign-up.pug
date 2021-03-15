@@ -1,0 +1,40 @@
+extends layout.pug
+
+block content
+  main
+    h1.visually-hidden Регистрация пользователя
+    section
+      .popup.popup--registration.popup--anti
+        a(class='popup__button button button--popup-close' aria-label='Закрыть окно')
+          | Закрыть
+          | окно
+        h2(class='popup__title') Регистрация
+        div(class='popup__form popup__form--active form form--register')
+          form(action='#' method='get')
+            div(class='form__field')
+              label
+                input(type='email' name='email' placeholder='Электронная почта' required='')
+            div(class='form__field')
+              label
+                input(type='text' name='name' placeholder='Имя' required='')
+            div(class='form__field')
+              label
+                input(type='text' name='surname' placeholder='Фамилия')
+            div(class='form__field')
+              label
+                input(type='password' name='password' placeholder='Пароль' required='')
+            div(class='form__field')
+              label
+                input(type='password' name='repeat-password' placeholder='Повтор пароля' required='')
+            div(class='form__validation-error')
+              p(class='form__error-message') При регистрации произошли ошибки:
+              ul(class='form__errors')
+                li(class='form__error') Пароль не может состоять из двух букв
+                li(class='form__error') Фамилия не должна быть смешной
+            div(class='form__image-loader')
+              a(class='form__avatar avatar')
+                img(src='img/icons/smile.svg' alt='аватар пользователя')
+              label
+                input.visually-hidden(type='file' name='upload')
+                | Загрузить фото профиля
+            button(class='form__submit-btn form__submit-btn--register button button--colored' type='submit') Зарегистрироваться
