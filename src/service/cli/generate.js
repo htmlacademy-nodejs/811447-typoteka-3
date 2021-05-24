@@ -1,8 +1,9 @@
 'use strict';
 const fs = require(`fs`).promises;
-const chalk = require(`chalk`);
 const {nanoid} = require(`nanoid`);
 const {MAX_ID_LENGTH} = require(`../../constants`);
+const {getLogger} = require(`../lib/logger`);
+const logger = getLogger({name: `generate`});
 
 const {
   getRandomInt,
@@ -25,7 +26,7 @@ const readContent = async (filePath) => {
     const content = await fs.readFile(filePath, `utf8`);
     return content.split(`\n`).slice(0, -1);
   } catch (err) {
-    console.error(chalk.red(err));
+    logger.error(err);
     return [];
   }
 };
@@ -69,9 +70,9 @@ module.exports = {
 
     try {
       await fs.writeFile(FILE_NAME, content);
-      console.info(chalk.green(`Операция завершилась успешно. Файл создан.`));
+      logger.info(`Операция завершилась успешно. Файл создан.`);
     } catch (err) {
-      console.error(chalk.red(`Не удалось записать данные в файл...`));
+      logger.error(`Не удалось записать данные в файл...`);
     }
   }
 };
