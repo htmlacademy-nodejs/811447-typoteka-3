@@ -1,7 +1,8 @@
 'use strict';
-
-const chalk = require(`chalk`);
+const {getLogger} = require(`./lib/logger`);
+const logger = getLogger({name: `service`});
 const {Cli} = require(`./cli`);
+
 const {
   DEFAULT_COMMAND,
   USER_ARGV_INDEX,
@@ -17,7 +18,7 @@ if (userArguments.length === 0 || !Cli[userCommand]) {
 }
 
 if (userCommand === Cli[`generate`] && userArguments[1] > 1000) {
-  console.error(chalk.red(`Не больше 1000 публикаций`));
+  logger.error(`Не больше 1000 объявлений`);
   process.exit(ExitCode.ERROR);
 }
 

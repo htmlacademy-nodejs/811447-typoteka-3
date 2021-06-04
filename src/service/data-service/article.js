@@ -37,7 +37,7 @@ class ArticleService {
   update(id, article) {
     const oldArticle = this._articles.find((item) => item.id === id);
 
-    return Object.assign(oldArticle, article);
+    return oldArticle ? Object.assign(oldArticle, article) : null;
   }
 
 }
