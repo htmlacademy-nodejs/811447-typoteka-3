@@ -25,3 +25,5 @@ module.exports.formatDate = (date) => {
     second: `numeric`,
   }).format(date);
 };
+
+module.exports.ensureArray = (value) => Array.isArray(value) ? value : [value];

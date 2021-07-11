@@ -5,7 +5,7 @@ block content
     section
       .popup.popup--new-publication.popup--anti
         .new-publication
-          form(action=`#` method='POST')
+          form(action=`/articles/edit/${article.id}` method='POST' enctype='multipart/form-data')
             div(class='new-publication__header')
               h1 Редактирование
               div(class='new-publication__date-form')
@@ -13,7 +13,7 @@ block content
                 div(class='new-publication__date-form-division')
                   div(class='new-publication__date-block')
                     label(for='new-publication-date' aria-label='Календарь')
-                    input#new-publication-date(type='text' name='date' placeholder=`${article.createdDate}`)
+                    input#new-publication-date(type='text' name='date' placeholder=article.createdAt)
               button(type='submit' class='new-publication__button button button--colored') Опубликовать
             a(class='popup__button button button--popup-close' aria-label='Закрыть окно')
               | Закрыть
@@ -25,17 +25,17 @@ block content
                     input(type='text' name='title' placeholder='Заголовок' value=article.title required='')
                 div(class='form__field form__field--post-image')
                   label
-                    input#image-name-field(type='text' name='photo' value='moya_mashinka.jpg' placeholder='Фотография' readonly='')
+                    input#image-name-field(type='text' name='photo' value=article.picture placeholder='Фотография' readonly='')
                   div(class='form__image-loader form__image-loader--publication')
                     label
                       input.visually-hidden(type='file' name='upload')
                       | Обзор
                   button.button.button--transparent Удалить
                 div(class='new-publication__category-wrapper')
-                  each category, index in categories
+                  each category in categories
                     div(class='new-publication__checkbox new-publication__checkbox--auto')
-                      input(type='checkbox' name=`category-${category}` id=`checkbox-${index + 1}`)
-                      label(for=`checkbox-${index + 1}`) #{category}
+                      input(type='checkbox' name='categories' checked=article.categories.some(item => item.id === category.id) value=category.id id=`checkbox-${category.id}`)
+                      label(for=`checkbox-${category.id}`) #{category.name}
                   a(class='new-publication__form-link button button--transparent' href='#') Добавить категорию
               div(class='form__wrapper form__wrapper--text')
                 div(class='form__field form__field--publication-text')

@@ -5,6 +5,7 @@ const multer = require(`multer`);
 const path = require(`path`);
 const {nanoid} = require(`nanoid`);
 const api = require(`../api`).getAPI();
+const {ensureArray} = require(`../../utils`);
 
 const articlesRouter = new Router();
 const UPLOAD_DIR = `../upload/img/`;
@@ -20,7 +21,15 @@ const storage = multer.diskStorage({
 });
 const upload = multer({storage});
 
-articlesRouter.get(`/category/:id`, (req, res) => res.render(`articles-by-category`));
+articlesRouter.get(`/category/:id`, async (req, res) => {
+  const {id} = req.params;
+  const [articles, categories] = await Promise.all([
+    api.getArticles(),
+    api.getCategories(true)
+  ]);
+  res.render(`articles-by-category`, {articles, categories, id});
+});
+
 articlesRouter.get(`/edit/:id`, async (req, res) => {
   const {id} = req.params;
   const [article, categories] = await Promise.all([
@@ -30,17 +39,21 @@ articlesRouter.get(`/edit/:id`, async (req, res) => {
   res.render(`edit-post`, {article, categories});
 });
 
-articlesRouter.get(`/add`, (req, res) => res.render(`new-post`));
+articlesRouter.get(`/add`, async (req, res) => {
+  const categories = await api.getCategories();
+  res.render(`new-post`, {categories});
+});
 
 articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
   const {body, file} = req;
   const articleData = {
-    image: file && file.filename ? file.filename : ``,
+    picture: file && file.filename ? file.filename : ``,
     announce: body.announcement,
     fullText: body[`full-text`],
     title: body.title,
-    category: `category`,
-    createdDate: body.date
+    categories: ensureArray(body.categories),
+    createdAt: body.date,
+    userId: 1
   };
   try {
     await api.createArticle(articleData);
@@ -50,6 +63,30 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
   }
 });
 
-articlesRouter.get(`/:id`, (req, res) => res.render(`post`));
+articlesRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const {id} = req.params;
+  const articleData = {
+    picture: file && file.filename ? file.filename : body.photo,
+    announce: body.announcement,
+    fullText: body[`full-text`],
+    title: body.title,
+    categories: ensureArray(body.categories),
+    createdAt: body.date,
+    userId: 1
+  };
+  try {
+    await api.updateArticle(id, articleData);
+    res.redirect(`/my`);
+  } catch (error) {
+    res.redirect(`/articles/edit/${id}`);
+  }
+});
+
+articlesRouter.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const article = await api.getArticle(id, true);
+  res.render(`post`, {article});
+});
 
 module.exports = articlesRouter;
