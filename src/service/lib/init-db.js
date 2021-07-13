@@ -1,5 +1,7 @@
 "use strict";
 
+const {getLogger} = require(`./logger`);
+const logger = getLogger({name: `initDB`});
 const defineModels = require(`../models`);
 const Aliase = require(`../models/aliase`);
 
@@ -38,6 +40,9 @@ module.exports = async (sequelize, {categories, articles, users}) => {
         )
     );
   });
-
-  await Promise.all(articlePromises);
+  try {
+    await Promise.all(articlePromises);
+  } catch (error) {
+    logger.error(error);
+  }
 };

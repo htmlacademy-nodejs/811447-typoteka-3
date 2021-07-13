@@ -49,7 +49,9 @@ class ArticleService {
     });
 
     const articleUpdated = await this._Article.findByPk(id, {include: [Aliase.CATEGORIES]});
-    await articleUpdated.addCategories(article.categories.map((category) => Number(category)));
+    if (articleUpdated) {
+      await articleUpdated.addCategories(article.categories.map((category) => Number(category)));
+    }
 
     return !!affectedRows;
   }
