@@ -1,5 +1,7 @@
 "use strict";
 const axios = require(`axios`);
+const {HttpMethod} = require(`../constants`);
+
 const TIMEOUT = 1000;
 
 class API {
@@ -27,13 +29,20 @@ class API {
     return this._load(`/search`, {params: {query}});
   }
 
-  getCategories() {
-    return this._load(`/categories`);
+  getCategories(count) {
+    return this._load(`/categories`, {params: {count}});
   }
 
   async createArticle(data) {
     return this._load(`/articles`, {
-      method: `POST`,
+      method: HttpMethod.POST,
+      data
+    });
+  }
+
+  async updateArticle(id, data) {
+    return this._load(`/articles/${id}`, {
+      method: HttpMethod.PUT,
       data
     });
   }
