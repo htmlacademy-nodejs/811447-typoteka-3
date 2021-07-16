@@ -9,6 +9,7 @@ myRouter.get(`/`, async (req, res) => {
   const articles = await api.getArticles();
   res.render(`my`, {articles});
 });
+
 myRouter.get(`/comments`, async (req, res) => {
   const articles = await api.getArticles();
   const comments = articles.map((article) => article.comments).flat();

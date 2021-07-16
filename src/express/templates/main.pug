@@ -8,27 +8,11 @@ block content
     section(class='main-page__theme-list')
       h2.visually-hidden Список тем
       ul.themes
-        li(class='themes__item')
-          a(class='themes__item-link' href='#') Автомобили
-            sup 88
-        li(class='themes__item')
-          a(class='themes__item-link' href='#') Удаленная работа
-            sup 13
-        li(class='themes__item')
-          a(class='themes__item-link' href='#') Бизнес
-            sup 13
-        li(class='themes__item')
-          a(class='themes__item-link' href='#') Путешествия
-            sup 13
-        li(class='themes__item')
-          a(class='themes__item-link themes__item-link--padding' href='#') Дизайн и обустройство
-            sup 13
-        li(class='themes__item')
-          a(class='themes__item-link' href='#') Производство игрушек
-            sup 22
-        li(class='themes__item')
-          a(class='themes__item-link' href='#') UX & UI
-            sup 22
+        each category in categories
+          li(class='themes__item')
+            a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
+              sup #{category.count}
+
     div(class='main-page__section-flex')
       section(class='main-page__hot hot')
         h2(class='hot__name') Самое обсуждаемое
@@ -85,12 +69,12 @@ block content
         each article in articles
           li(class='preview__item')
             ul(class='preview__breadcrumbs')
-              each category in article.category
+              each category in article.categories
                 li(class='preview__breadcrumbs-item')
-                  a(class='preview__breadcrumbs-link' href='#') #{category}
-            //- div(class='preview__background')
-            //-   img(class='preview__background-image' src='img/skyscraper@1x.jpg' width='460' height='240' srcset='img/skyscraper@1x.jpg 1x, img/skyscraper@2x.jpg 2x' alt='Фотография небоскреба')
-            time(class='preview__time' datetime='2019-03-21T20:33') #{article.createdDate}
+                  a(class='preview__breadcrumbs-link' href='#') #{category.name}
+            div(class='preview__background')
+              img(class='preview__background-image' src=`/img/${article.picture}@1x.jpg` width='460' height='240' srcset=`/img/${article.picture}@1x.jpg 1x, img/${article.picture}@2x.jpg 2x` alt=article.title)
+            time(class='preview__time' datetime='2019-03-21T20:33') #{article.createdAt}
             h3(class='preview__name')
               a(class='preview__name-link' href=`/articles/${article.id}`) #{article.title}
             p(class='preview__text') #{article.announce}
