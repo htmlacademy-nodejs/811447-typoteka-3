@@ -82,20 +82,4 @@ block content
             a(class='preview__comment' href='#') Комментарии
               span(class='preview__cloud')
               b(class='preview__comment-count') #{article.comments.length}
-
-    div(class='preview__toggle-wrapper')
-      ul(class='preview__pagination pagination')
-        li
-          a(class='pagination__button button button--backwards button--disabled' href='#' aria-label='Страница назад') Назад
-        li(class='pagination__item pagination__item--active')
-          a(href='#') 1
-        li(class='pagination__item')
-          a(href='#') 2
-        li(class='pagination__item')
-          a(href='#') 3
-        li(class='pagination__item')
-          a(href='#') 4
-        li(class='pagination__item')
-          a(href='#') 5
-        li
-          a(class='pagination__button button button--forward' href='#' aria-label='Страница вперед') Вперед
+    +pagination(page, totalPages, 8, '?')

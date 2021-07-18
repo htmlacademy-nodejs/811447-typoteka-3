@@ -9,6 +9,7 @@ const {ensureArray} = require(`../../utils`);
 
 const articlesRouter = new Router();
 const UPLOAD_DIR = `../upload/img/`;
+const OFFERS_PER_PAGE = 8;
 
 const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
 const storage = multer.diskStorage({
@@ -22,12 +23,22 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 articlesRouter.get(`/category/:id`, async (req, res) => {
+  let {page = 1} = req.query;
+  page = +page;
+  const limit = OFFERS_PER_PAGE;
+  const offset = (page - 1) * OFFERS_PER_PAGE;
+
   const {id} = req.params;
-  const [articles, categories] = await Promise.all([
-    api.getArticles(),
+  const [
+    {count, articles},
+    categories
+  ] = await Promise.all([
+    api.getArticles({limit, offset, comments: true}),
     api.getCategories(true)
   ]);
-  res.render(`articles-by-category`, {articles, categories, id});
+
+  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+  res.render(`articles-by-category`, {articles, categories, id, page, totalPages});
 });
 
 articlesRouter.get(`/edit/:id`, async (req, res) => {

@@ -56,6 +56,16 @@ class ArticleService {
     return !!affectedRows;
   }
 
+  async findPage({limit, offset}) {
+    const {count, rows} = await this._Article.findAndCountAll({
+      limit,
+      offset,
+      include: [Aliase.CATEGORIES, Aliase.COMMENTS],
+      distinct: true
+    });
+    return {count, articles: rows};
+  }
+
 }
 
 module.exports = ArticleService;
