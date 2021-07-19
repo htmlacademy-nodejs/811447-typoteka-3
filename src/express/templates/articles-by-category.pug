@@ -29,4 +29,5 @@ block content
             a(class='preview__comment' href='#') Комментарии
               span(class='preview__cloud')
               b(class='preview__comment-count') #{article.comments.length}
+  +pagination(page, totalPages, 8, '?')
 
