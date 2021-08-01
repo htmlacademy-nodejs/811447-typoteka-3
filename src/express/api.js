@@ -33,16 +33,23 @@ class API {
     return this._load(`/categories`, {params: {count}});
   }
 
-  async createArticle(data) {
+  createArticle(data) {
     return this._load(`/articles`, {
       method: HttpMethod.POST,
       data
     });
   }
 
-  async updateArticle(id, data) {
+  updateArticle(id, data) {
     return this._load(`/articles/${id}`, {
       method: HttpMethod.PUT,
+      data
+    });
+  }
+
+  createComment(id, data) {
+    return this._load(`/articles/${id}/comments`, {
+      method: HttpMethod.POST,
       data
     });
   }

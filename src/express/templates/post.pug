@@ -14,7 +14,7 @@ block content
         div(class='post__wrapper')
           div(class='post__head')
             a(href='#' class='post__backwards button button--backwards') Назад
-            time(class='post__date' datetime='2019-03-21T20:33') #{formatDate(article.createdAt)}
+            time(class='post__date' datetime=article.createdAt) #{formatDate(article.createdAt)}
             h2(class='post__title title title--main') #{article.title}
             ul(class='post__themes themes')
               each category in article.categories
@@ -39,12 +39,12 @@ block content
                 div(class='comments__text')
                   div(class='comments__head')
                     p Евгений Петров •
-                    time(class='comments__date' datetime='2019-03-21T20:33') #{formatDate(comment.createdAt)}
+                    time(class='comments__date' datetime=comment.createdAt) #{formatDate(comment.createdAt)}
                   p(class='comments__message') #{comment.text}
           div(class='comments__footer comments__footer--user')
-            form(action='#' method='POST')
+            form(action=`/articles/${id}/comments` method='POST' enctype='multipart/form-data' autocomplete='off')
               div(class='comments__avatar avatar')
                 img(src='/img/avatar-2.png' alt='аватар пользователя')
               label
-                textarea(rows='1' name='message' placeholder='Присоединиться к обсуждению')
+                textarea(rows='1' name='comment' placeholder='Присоединиться к обсуждению' required minlength='20')
               button(type='submit' class='comments__button button button--colored') Опубликовать
