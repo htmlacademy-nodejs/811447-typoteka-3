@@ -13,7 +13,7 @@ block content
                 div(class='new-publication__date-form-division')
                   div(class='new-publication__date-block')
                     label(for='new-publication-date' aria-label='Календарь')
-                    input#new-publication-date(type='text' name='date' placeholder='2021-03-21')
+                    input#new-publication-date(type='text' name='date' placeholder='2021-03-21' required)
               button(type='submit' class='new-publication__button button button--colored') Опубликовать
             a(class='popup__button button button--popup-close' aria-label='Закрыть окно')
               | Закрыть
@@ -22,10 +22,10 @@ block content
               div(class='form__wrapper form__wrapper--intro')
                 div(class='form__field')
                   label
-                    input(type='text' name='title' placeholder='Заголовок' required='')
+                    input(type='text' name='title' placeholder='Заголовок' minlength='30' maxlength='250' required)
                 div(class='form__field form__field--post-image')
                   label
-                    input#image-name-field(type='text' name='photo' placeholder='Фотография' readonly='')
+                    input#image-name-field(type='text' name='photo' placeholder='Фотография' readonly='' accept='image/jpg,image/png')
                   div(class='form__image-loader form__image-loader--publication')
                     label
                       input.visually-hidden(type='file' name='upload')
@@ -39,7 +39,8 @@ block content
               div(class='form__wrapper form__wrapper--text')
                 div(class='form__field form__field--publication-text')
                   label
-                    textarea(rows='5' name='announcement' placeholder='Анонс публикации')
+                    textarea(rows='5' name='announcement' placeholder='Анонс публикации' required minlength='30' maxlength='250')
                 div(class='form__field form__field--publication-text')
                   label
-                    textarea(rows='10' name='full-text' placeholder='Полный текст публикации')
+                    textarea(rows='10' name='full-text' placeholder='Полный текст публикации' maxlength='1000')
+            +errorMessage(error)

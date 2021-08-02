@@ -14,7 +14,7 @@ module.exports = (app, articleService, commentService) => {
   route.get(`/`, async (req, res) => {
     const {offset, limit, comments} = req.query;
     let result;
-    if (limit || offset) {
+    if (limit && offset) {
       result = await articleService.findPage({limit, offset, comments});
     } else {
       result = await articleService.findAll(comments);

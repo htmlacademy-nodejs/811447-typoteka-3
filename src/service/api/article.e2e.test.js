@@ -49,11 +49,11 @@ describe(`API returns an offer with given id`, () => {
 
 describe(`API creates an article if data is valid`, () => {
   const newArticle = {
-    userId: 1,
+    date: `2021-07-30`,
     picture: ``,
     categories: [1],
-    title: `Как собрать камни бесконечности`,
-    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры.`,
+    title: `Как собрать камни бесконечности. Как собрать камни бесконечности.`,
+    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. Бороться с прокрастинацией несложно.`,
     fullText: `Освоить вёрстку несложно. Возьмите новую книгу и закрепите все упражнения на практике. Игры и программирование разные вещи.`,
   };
 
@@ -78,7 +78,7 @@ describe(`API refuses to create an article if data is invalid`, () => {
   const newArticle = {
     categories: [1],
     title: `Как собрать камни бесконечности`,
-    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры.`,
+    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. `,
     fullText: `Освоить вёрстку несложно. Возьмите новую книгу и закрепите все упражнения на практике. Игры и программирование разные вещи.`,
   };
 
@@ -101,13 +101,12 @@ describe(`API refuses to create an article if data is invalid`, () => {
 
 describe(`API changes existent article`, () => {
   const newArticle = {
-    userId: 1,
+    date: `2021-07-30`,
     picture: ``,
     categories: [1],
-    title: `Как собрать камни бесконечности`,
-    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры.`,
+    title: `Как собрать камни бесконечности. Как собрать камни бесконечности`,
+    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. `,
     fullText: `Освоить вёрстку несложно. Возьмите новую книгу и закрепите все упражнения на практике. Игры и программирование разные вещи.`,
-    createdAt: `2021-03-22 00:46:46`
   };
 
   let app;
@@ -123,18 +122,18 @@ describe(`API changes existent article`, () => {
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
   test(`Article is really changed`, () => request(app)
     .get(`/articles/2`)
-    .expect((res) => expect(res.body.title).toBe(`Как собрать камни бесконечности`))
+    .expect((res) => expect(res.body.title).toBe(`Как собрать камни бесконечности. Как собрать камни бесконечности`))
   );
 });
 
 test(`API returns status code 404 when trying to change non-existent article`, async () => {
   const app = await createAPI();
   const validArticle = {
-    userId: 1,
+    date: `2021-07-30`,
     picture: ``,
     categories: [1],
     title: `Как собрать камни бесконечности`,
-    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры.`,
+    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения.`,
     fullText: `Освоить вёрстку несложно. Возьмите новую книгу и закрепите все упражнения на практике. Игры и программирование разные вещи.`,
   };
 
@@ -148,11 +147,11 @@ test(`API returns status code 400 when trying to change an article with invalid 
   const app = await createAPI();
 
   const invalidArticle = {
-    userId: 1,
+    date: `2021-07-30`,
     picture: ``,
     categories: [1],
     title: `Как собрать камни бесконечности`,
-    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения. Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. Игры и программирование разные вещи. Не стоит идти в программисты, если вам нравятся только игры.`,
+    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения.`,
     fullText: `Освоить вёрстку несложно. Возьмите новую книгу и закрепите все упражнения на практике. Игры и программирование разные вещи.`,
   };
 
@@ -160,6 +159,61 @@ test(`API returns status code 400 when trying to change an article with invalid 
     .put(`/articles/NOEXST`)
     .send(invalidArticle)
     .expect(HttpCode.NOT_FOUND);
+});
+
+test(`When field type is wrong response code is 400`, async () => {
+  const app = await createAPI();
+
+  const newArticle = {
+    date: `2021-07-30`,
+    picture: ``,
+    categories: [1],
+    title: `Как собрать камни бесконечности. Как собрать камни бесконечности`,
+    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения.`,
+    fullText: `Освоить вёрстку несложно. Возьмите новую книгу и закрепите все упражнения на практике. Игры и программирование разные вещи.`,
+  };
+
+  const badArticles = [
+    {...newArticle, title: 12345},
+    {...newArticle, announce: 12345},
+    {...newArticle, picture: 123},
+    {...newArticle, date: 123},
+    {...newArticle, fullText: 123},
+    {...newArticle, categories: `Котики`}
+  ];
+
+  for (const badArticle of badArticles) {
+    await request(app)
+      .post(`/articles`)
+      .send(badArticle)
+      .expect(HttpCode.BAD_REQUEST);
+  }
+});
+
+test(`When field value is wrong response code is 400`, async () => {
+  const app = await createAPI();
+
+  const newArticle = {
+    date: `2021-07-30`,
+    picture: ``,
+    categories: [1],
+    title: `Как собрать камни бесконечности. Как собрать камни бесконечности`,
+    announce: `Из под его пера вышло 8 платиновых альбомов. Достичь успеха помогут ежедневные повторения.`,
+    fullText: `Освоить вёрстку несложно. Возьмите новую книгу и закрепите все упражнения на практике. Игры и программирование разные вещи.`,
+  };
+
+  const badArticles = [
+    {...newArticle, title: `Too short`},
+    {...newArticle, announce: `Too short`},
+    {...newArticle, categories: [-1]}
+  ];
+
+  for (const badArticle of badArticles) {
+    await request(app)
+      .post(`/articles`)
+      .send(badArticle)
+      .expect(HttpCode.BAD_REQUEST);
+  }
 });
 
 describe(`API correctly deletes an article`, () => {

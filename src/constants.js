@@ -31,3 +31,5 @@ module.exports.Env = {
   DEVELOPMENT: `development`,
   PRODUCTION: `production`
 };
+
+module.exports.OFFERS_PER_PAGE = 8;
