@@ -11,7 +11,8 @@ const schema = Joi.object({
   title: Joi.string().min(30).max(250).required(),
   announce: Joi.string().min(30).max(250).required(),
   fullText: Joi.string().allow(``).max(1000),
-  picture: Joi.string().allow(``)
+  picture: Joi.string().allow(``),
+  userId: Joi.number().integer().positive().required()
 });
 
 module.exports = (req, res, next) => {

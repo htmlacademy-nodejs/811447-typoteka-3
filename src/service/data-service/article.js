@@ -7,6 +7,7 @@ class ArticleService {
     this._Article = sequelize.models.Article;
     this._Comment = sequelize.models.Comment;
     this._Category = sequelize.models.Category;
+    this._User = sequelize.models.User;
   }
 
   async create(articleData) {
@@ -23,7 +24,17 @@ class ArticleService {
   }
 
   async findAll() {
-    const include = [Aliase.CATEGORIES, Aliase.COMMENTS];
+    const include = [
+      Aliase.CATEGORIES,
+      Aliase.COMMENTS,
+      {
+        model: this._User,
+        as: Aliase.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }
+    ];
 
     const articles = await this._Article.findAll({
       attributes: [
@@ -60,7 +71,17 @@ class ArticleService {
     const {count, rows} = await this._Article.findAndCountAll({
       limit,
       offset,
-      include: [Aliase.CATEGORIES, Aliase.COMMENTS],
+      include: [
+        Aliase.CATEGORIES,
+        Aliase.COMMENTS,
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ],
       distinct: true
     });
     return {count, articles: rows};

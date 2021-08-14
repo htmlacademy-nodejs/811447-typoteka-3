@@ -49,6 +49,7 @@ describe(`API returns an offer with given id`, () => {
 
 describe(`API creates an article if data is valid`, () => {
   const newArticle = {
+    userId: 1,
     date: `2021-07-30`,
     picture: ``,
     categories: [1],
@@ -101,6 +102,7 @@ describe(`API refuses to create an article if data is invalid`, () => {
 
 describe(`API changes existent article`, () => {
   const newArticle = {
+    userId: 1,
     date: `2021-07-30`,
     picture: ``,
     categories: [1],
@@ -129,6 +131,7 @@ describe(`API changes existent article`, () => {
 test(`API returns status code 404 when trying to change non-existent article`, async () => {
   const app = await createAPI();
   const validArticle = {
+    userId: 1,
     date: `2021-07-30`,
     picture: ``,
     categories: [1],
@@ -147,6 +150,7 @@ test(`API returns status code 400 when trying to change an article with invalid 
   const app = await createAPI();
 
   const invalidArticle = {
+    userId: 1,
     date: `2021-07-30`,
     picture: ``,
     categories: [1],
