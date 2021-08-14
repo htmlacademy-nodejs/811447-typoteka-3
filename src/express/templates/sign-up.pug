@@ -10,7 +10,7 @@ block content
           | окно
         h2(class='popup__title') Регистрация
         div(class='popup__form popup__form--active form form--register')
-          form(action='#' method='get')
+          form(action='/register' method='post' enctype='multipart/form-data' autocomplete='off')
             div(class='form__field')
               label
                 input(type='email' name='email' placeholder='Электронная почта' required='')
@@ -26,11 +26,12 @@ block content
             div(class='form__field')
               label
                 input(type='password' name='repeat-password' placeholder='Повтор пароля' required='')
-            div(class='form__validation-error')
-              p(class='form__error-message') При регистрации произошли ошибки:
-              ul(class='form__errors')
-                li(class='form__error') Пароль не может состоять из двух букв
-                li(class='form__error') Фамилия не должна быть смешной
+            if error
+              div(class='form__validation-error')
+                p(class='form__error-message') При регистрации произошли ошибки:
+                ul(class='form__errors')
+                  li(class='form__error') #{error}
+
             div(class='form__image-loader')
               a(class='form__avatar avatar')
                 img(src='img/icons/smile.svg' alt='аватар пользователя')

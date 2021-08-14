@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
 * Студент: [Анастасия Васинская](https://up.htmlacademy.ru/nodejs/3/user/811447).
-* Наставник: [Алексей Балесный](https://htmlacademy.ru/profile/id221665).
+* Наставник: [Владислав Зубко](https://htmlacademy.ru/profile/whatislove).
 
 ---
 
