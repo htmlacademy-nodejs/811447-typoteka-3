@@ -1,18 +1,20 @@
 'use strict';
 
+const passwordUtils = require(`./service/lib/password`);
+
 module.exports.mockUsers = [
   {
     firstName: `Иван`,
     lastName: `Иванов`,
     email: `ivanov@example.com`,
-    passwordHash: `12345`,
+    passwordHash: passwordUtils.hashSync(`ivanov`),
     avatar: `avatar-1.jpg`
   },
   {
     firstName: `Пётр`,
     lastName: `Петров`,
     email: `petrov@example.com`,
-    passwordHash: `12345`,
+    passwordHash: passwordUtils.hashSync(`petrov`),
     avatar: `avatar-2.jpg`
   }
 ];

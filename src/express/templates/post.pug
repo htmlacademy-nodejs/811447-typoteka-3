@@ -43,6 +43,7 @@ block content
                   p(class='comments__message') #{comment.text}
           div(class='comments__footer comments__footer--user')
             form(action=`/articles/${id}/comments` method='POST' enctype='multipart/form-data' autocomplete='off')
+              input(type="hidden" name="_csrf" value=csrfToken)
               div(class='comments__avatar avatar')
                 img(src='/img/avatar-2.png' alt='аватар пользователя')
               label
