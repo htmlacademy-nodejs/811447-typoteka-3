@@ -22,7 +22,34 @@ class CommentService {
     return !!deletedRows;
   }
 
-  findAll(articleId) {
+  async findAll() {
+    const include = [
+      Aliase.CATEGORIES,
+      Aliase.COMMENTS,
+      {
+        model: this._User,
+        as: Aliase.USER,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      }
+    ];
+
+    const articles = await this._Article.findAll({
+      attributes: [
+        `title`,
+      ],
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+      include,
+      raw: true
+    });
+
+    return articles;
+  }
+
+  findAllByArticle(articleId) {
     return this._Comment.findAll({
       where: {articleId},
       raw: true,

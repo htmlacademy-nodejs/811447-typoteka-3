@@ -6,7 +6,7 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 const user = require(`./user`);
 const initDB = require(`../lib/init-db`);
-const DataService = require(`../data-service/search`);
+const DataService = require(`../data-service/user`);
 const {HttpCode} = require(`../../constants`);
 const {mockArticles, mockUsers, mockCategories} = require(`../../test-mocks`);
 
@@ -98,7 +98,7 @@ describe(`API authenticate user if data is valid`, () => {
 
   test(`Status code is 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
 
-  test(`User name is Иван Иванов`, () => expect(response.body.name).toBe(`Иван Иванов`));
+  test(`User name is Иван Иванов`, () => expect(response.body.lastName).toBe(`Иванов`));
 });
 
 describe(`API refuses to authenticate user if data is invalid`, () => {

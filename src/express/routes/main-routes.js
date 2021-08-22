@@ -1,8 +1,10 @@
 'use strict';
 
-const api = require(`../api`).getAPI();
 const {Router} = require(`express`);
+const api = require(`../api`).getAPI();
 const upload = require(`../../service/middlewares/upload`);
+const auth = require(`../../service/middlewares/auth`);
+const author = require(`../../service/middlewares/author`);
 
 const OFFERS_PER_PAGE = 8;
 
@@ -19,7 +21,7 @@ mainRouter.get(`/`, async (req, res) => {
     {count, articles},
     categories
   ] = await Promise.all([
-    api.getArticles({limit, offset, comments: true}),
+    api.getArticles({limit, offset}),
     api.getCategories(true)
   ]);
 
@@ -71,21 +73,25 @@ mainRouter.get(`/logout`, (req, res) => {
 });
 
 mainRouter.get(`/search`, async (req, res) => {
+  const {user} = req.session;
+
   try {
     const {search} = req.query;
     const results = await api.search(search);
 
-    res.render(`search`, {results});
+    res.render(`search`, {results, user});
   } catch (error) {
     res.render(`search`, {
-      results: []
+      results: [],
+      user
     });
   }
 });
 
-mainRouter.get(`/categories`, async (req, res) => {
+mainRouter.get(`/categories`, [auth, author], async (req, res) => {
+  const {user} = req.session;
   const categories = await api.getCategories(true);
-  res.render(`all-categories`, {categories});
+  res.render(`all-categories`, {categories, user});
 });
 
 module.exports = mainRouter;

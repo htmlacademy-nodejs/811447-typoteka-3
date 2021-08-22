@@ -1,11 +1,6 @@
 extends layout.pug
 
 block content
-  -
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      return date.toLocaleString();
-    }
   main
     section.post
       h1.visually-hidden Пост
@@ -19,11 +14,12 @@ block content
             ul(class='post__themes themes')
               each category in article.categories
                 li(class='themes__item')
-                  a(class='themes__item-link' href=`/categoty/${id}`) #{category.name}
+                  a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
                     sup #{category.count}
                   button(class='themes__remove-btn' type='button') Удалить категорию
-          div(class='post__picture')
-            img(src=`/img/${article.picture}@1x.jpg` alt=article.title)
+          if article.picture
+            div(class='post__picture')
+              img(src=`/img/${article.picture}` alt=article.title)
           div(class='post__text')
             h3 #{article.title}
             p #{article.announce}
@@ -32,20 +28,28 @@ block content
         section(class='post__comments comments')
           h2(class='comments__title title title--middle') Комментарии
           ul(class='comments__list')
-            each comment in article.comments
+            each comment in comments
               li(class='comments__comment')
                 div(class='comments__avatar avatar')
-                  img(src='/img/avatar-1.png' alt='аватар пользователя')
+                  img(src=`/img/${comment.user.avatar}` alt=`${comment.user.firstName} ${comment.user.lastName}`)
                 div(class='comments__text')
                   div(class='comments__head')
-                    p Евгений Петров •
+                    p #{comment.user.firstName} #{comment.user.lastName} •
                     time(class='comments__date' datetime=comment.createdAt) #{formatDate(comment.createdAt)}
                   p(class='comments__message') #{comment.text}
-          div(class='comments__footer comments__footer--user')
-            form(action=`/articles/${id}/comments` method='POST' enctype='multipart/form-data' autocomplete='off')
-              input(type="hidden" name="_csrf" value=csrfToken)
-              div(class='comments__avatar avatar')
-                img(src='/img/avatar-2.png' alt='аватар пользователя')
-              label
-                textarea(rows='1' name='comment' placeholder='Присоединиться к обсуждению' required minlength='20')
-              button(type='submit' class='comments__button button button--colored') Опубликовать
+          if !user
+            .comments__footer.comments__footer--visitor
+              a(href="/login").comments__button.button.button--colored(type='submit') Войти
+              .comments__registration
+                p.text.text--signature
+                  b.title.title--small Регистрация
+                  | Чтобы присоединиться к переписке нужно зарегистрироваться
+          else
+            div(class='comments__footer comments__footer--user')
+              form(action=`/articles/${id}/comments` method='POST' autocomplete='off')
+                input(type="hidden" name="_csrf" value=csrfToken)
+                div(class='comments__avatar avatar')
+                  img(src=`/img/${user.avatar}` alt=`${user.firstName} ${user.lastName}`)
+                label
+                  textarea(rows='1' name='comment' placeholder='Присоединиться к обсуждению' required minlength='20')
+                button(type='submit' class='comments__button button button--colored') Опубликовать

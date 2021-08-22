@@ -5,7 +5,7 @@ block content
     section
       .popup.popup--new-publication.popup--anti
         .new-publication
-          form(action='/articles/add' method='POST' enctype='multipart/form-data' autocomplete='off')
+          form(action='/articles/add' method='post' enctype='multipart/form-data' autocomplete='off')
             input(type="hidden" name="_csrf" value=csrfToken)
             div(class='new-publication__header')
               h1 Новая публикация

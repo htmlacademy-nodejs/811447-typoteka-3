@@ -71,10 +71,10 @@ block content
             ul(class='preview__breadcrumbs')
               each category in article.categories
                 li(class='preview__breadcrumbs-item')
-                  a(class='preview__breadcrumbs-link' href='#') #{category.name}
+                  a(class='preview__breadcrumbs-link' href=`/articles/category/${category.id}`) #{category.name}
             div(class='preview__background')
-              img(class='preview__background-image' src=`/img/${article.picture}@1x.jpg` width='460' height='240' srcset=`/img/${article.picture}@1x.jpg 1x, img/${article.picture}@2x.jpg 2x` alt=article.title)
-            time(class='preview__time' datetime='2019-03-21T20:33') #{article.createdAt}
+              img(class='preview__background-image' src=`/img/${article.picture}` width='460' height='240' alt=article.title)
+            time(class='preview__time' datetime='2019-03-21T20:33') #{formatDate(article.createdAt)}
             h3(class='preview__name')
               a(class='preview__name-link' href=`/articles/${article.id}`) #{article.title}
             p(class='preview__text') #{article.announce}
@@ -82,4 +82,4 @@ block content
             a(class='preview__comment' href='#') Комментарии
               span(class='preview__cloud')
               b(class='preview__comment-count') #{article.comments.length}
-
+    +pagination(page, totalPages, 8, '?')

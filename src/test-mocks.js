@@ -54,7 +54,7 @@ module.exports.mockArticles = [
     ]
   },
   {
-    "userId": 2,
+    "userId": 1,
     "picture": `sea`,
     "title": `Ёлки. История деревьев`,
     "announce": `Первая большая ёлка была установлена только в 1938 году.`,
@@ -79,7 +79,7 @@ module.exports.mockArticles = [
     ]
   },
   {
-    "userId": 2,
+    "userId": 1,
     "picture": `skyscraper`,
     "title": `Как достигнуть успеха не вставая с кресла`,
     "announce": `Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много.`,

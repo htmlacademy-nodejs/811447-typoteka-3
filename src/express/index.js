@@ -49,7 +49,7 @@ app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
 
 app.use((req, res) => res.status(HttpCode.BAD_REQUEST).render(`errors/404`));
 app.use((err, _req, res, _next) => {
-  res.status(HttpCode.INTERNAL_SERVER_ERROR).render(`errors/500`);
+  return res.status(HttpCode.INTERNAL_SERVER_ERROR).render(`errors/500`);
 });
 
 app.set(`views`, path.resolve(__dirname, `templates`));

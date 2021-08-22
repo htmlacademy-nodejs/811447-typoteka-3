@@ -5,6 +5,7 @@ const logger = getLogger({name: `generate`});
 const initDatabase = require(`../lib/init-db`);
 const sequelize = require(`../lib/sequelize`);
 const {ExitCode} = require(`../../constants`);
+const passwordUtils = require(`../lib/password`);
 
 const {
   getRandomInt,
@@ -16,7 +17,7 @@ const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
-const PICTURES = [`forest`, `sea`, `skyscraper`];
+const PICTURES = [`forest.jpg`, `sea.jpg`, `skyscraper.jpg`];
 
 const MAX_COMMENTS = 4;
 
@@ -43,7 +44,7 @@ const generatePosts = (count, titles, categories, sentences, comments, users) =>
 
   return Array(count).fill({}).map(() => {
     return {
-      user: users[getRandomInt(0, users.length - 1)].email,
+      user: users[0].email,
       picture: PICTURES[getRandomInt(0, PICTURES.length - 1)],
       title: titles[getRandomInt(0, titles.length - 1)],
       announce: shuffle(sentences).slice(0, getRandomInt(1, 5)).join(` `),
@@ -75,15 +76,17 @@ module.exports = {
         firstName: `Иван`,
         lastName: `Иванов`,
         email: `ivanov@example.com`,
-        passwordHash: `12345`,
-        avatar: `avatar-1.jpg`
+        passwordHash: passwordUtils.hashSync(`123456`),
+        avatar: `forest.jpg`,
+        isAuthor: true
       },
       {
         firstName: `Пётр`,
         lastName: `Петров`,
         email: `petrov@example.com`,
-        passwordHash: `12345`,
-        avatar: `avatar-2.jpg`
+        passwordHash: passwordUtils.hashSync(`123456`),
+        avatar: `sea.jpg`,
+        isAuthor: false
       }
     ];
     const [count] = args;

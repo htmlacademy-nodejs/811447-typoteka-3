@@ -17,8 +17,12 @@ class API {
     return response.data;
   }
 
-  getArticles({offset, limit, comments}) {
-    return this._load(`/articles`, {params: {offset, limit, comments}});
+  getArticles({offset, limit, category}) {
+    return this._load(`/articles`, {params: {offset, limit, category}});
+  }
+
+  getComments() {
+    return this._load(`/articles/comments`);
   }
 
   getArticle(id) {
