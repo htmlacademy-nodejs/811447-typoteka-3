@@ -45,13 +45,63 @@ class ArticleService {
         `picture`,
         `createdAt`
       ],
+      order: [
+        [`createdAt`, `DESC`]
+      ],
       include
     });
     return articles.map((item) => item.get());
   }
 
+  async findAllByCategory({limit, offset}) {
+    const {count, rows} = await this._Article.findAndCountAll({
+
+      limit,
+      offset,
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+      include: [
+        Aliase.CATEGORIES,
+        Aliase.COMMENTS,
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ],
+      distinct: true
+    });
+    return {count, articles: rows};
+  }
+
+
   async findOne(id) {
-    return this._Article.findByPk(id, {include: [Aliase.CATEGORIES, Aliase.COMMENTS]});
+    const comments = await this._Comment.findAll({
+      where: {articleId: id},
+      order: [
+        [`createdAt`, `DESC`]
+      ],
+      include: [
+        {
+          model: this._User,
+          as: Aliase.USER,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ]});
+
+    const article = await this._Article.findByPk(id, {
+      include: [
+        Aliase.CATEGORIES,
+        Aliase.COMMENTS
+      ]
+    });
+
+    return {article, comments};
   }
 
   async update(id, article) {
@@ -71,6 +121,9 @@ class ArticleService {
     const {count, rows} = await this._Article.findAndCountAll({
       limit,
       offset,
+      order: [
+        [`createdAt`, `DESC`]
+      ],
       include: [
         Aliase.CATEGORIES,
         Aliase.COMMENTS,

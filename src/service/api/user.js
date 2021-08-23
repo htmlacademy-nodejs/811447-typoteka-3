@@ -14,6 +14,7 @@ module.exports = (app, service) => {
     const data = req.body;
 
     data.passwordHash = await passwordUtils.hash(data.password);
+    data.isAuthor = false;
 
     const result = await service.create(data);
 
@@ -21,5 +22,23 @@ module.exports = (app, service) => {
 
     res.status(HttpCode.CREATED)
       .json(result);
+  });
+
+  route.post(`/auth`, async (req, res) => {
+    const {email, password} = req.body;
+    const user = await service.findByEmail(email);
+    if (!user) {
+      res.status(HttpCode.UNAUTHORIZED).send(`Email is incorrect`);
+      return;
+    }
+
+    const passwordIsCorrect = await passwordUtils.compare(password, user.passwordHash);
+
+    if (passwordIsCorrect) {
+      delete user.passwordHash;
+      res.status(HttpCode.OK).json(user);
+    } else {
+      res.status(HttpCode.UNAUTHORIZED).send(`Password is incorrect`);
+    }
   });
 };

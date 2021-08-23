@@ -44,7 +44,7 @@ describe(`API returns an offer with given id`, () => {
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
-  test(`Offer's title is "Ёлки. История деревьев"`, () => expect(response.body.title).toBe(`Ёлки. История деревьев`));
+  test(`Offer's title is "Ёлки. История деревьев"`, () => expect(response.body.article.title).toBe(`Ёлки. История деревьев`));
 });
 
 describe(`API creates an article if data is valid`, () => {
@@ -124,7 +124,7 @@ describe(`API changes existent article`, () => {
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
   test(`Article is really changed`, () => request(app)
     .get(`/articles/2`)
-    .expect((res) => expect(res.body.title).toBe(`Как собрать камни бесконечности. Как собрать камни бесконечности`))
+    .expect((res) => expect(res.body.article.title).toBe(`Как собрать камни бесконечности. Как собрать камни бесконечности`))
   );
 });
 

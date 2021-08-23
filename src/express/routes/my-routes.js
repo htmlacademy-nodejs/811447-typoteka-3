@@ -2,18 +2,21 @@
 
 const {Router} = require(`express`);
 const api = require(`../api`).getAPI();
+const auth = require(`../../service/middlewares/auth`);
+const author = require(`../../service/middlewares/author`);
 
 const myRouter = new Router();
 
-myRouter.get(`/`, async (req, res) => {
-  const articles = await api.getArticles({limit: null, offset: null, comments: true});
-  res.render(`my`, {articles});
+myRouter.get(`/`, [auth, author], async (req, res) => {
+  const {user} = req.session;
+  const articles = await api.getArticles({limit: null, offset: null});
+  res.render(`my`, {articles, user});
 });
 
-myRouter.get(`/comments`, async (req, res) => {
-  const articles = await api.getArticles();
-  const comments = articles.map((article) => article.comments).flat();
-  res.render(`comments`, {comments});
+myRouter.get(`/comments`, [auth, author], async (req, res) => {
+  const {user} = req.session;
+  const comments = await api.getComments();
+  res.render(`comments`, {comments, user});
 });
 
 module.exports = myRouter;

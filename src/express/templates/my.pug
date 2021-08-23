@@ -1,4 +1,4 @@
-extends admin-layout.pug
+extends layout.pug
 
 block content
 
@@ -8,7 +8,7 @@ block content
       ul(class='notes__list')
         each article in articles
           li(class='notes__list-item')
-            time(class='notes__item-time' datetime='2019-03-21T20:33') #{article.createdDate}
+            time(class='notes__item-time' datetime=article.createdAt) #{formatDate(article.createdAt)}
             a(class='notes__item-text' href=`/articles/${article.id}`) #{article.title}
             button(class='notes__button button button--close-item' type='button')
               span.visually-hidden Закрыть строку списка

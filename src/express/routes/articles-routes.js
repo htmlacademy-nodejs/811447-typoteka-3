@@ -1,29 +1,22 @@
 'use strict';
 
 const {Router} = require(`express`);
-const multer = require(`multer`);
-const path = require(`path`);
-const {nanoid} = require(`nanoid`);
+const csrf = require(`csurf`);
 const api = require(`../api`).getAPI();
 const {ensureArray} = require(`../../utils`);
 const {OFFERS_PER_PAGE} = require(`../../constants`);
+const auth = require(`../../service/middlewares/auth`);
+const author = require(`../../service/middlewares/author`);
+const upload = require(`../../service/middlewares/upload`);
+
+const csrfProtection = csrf();
 
 const articlesRouter = new Router();
-const UPLOAD_DIR = `../upload/img/`;
 
-const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
-const storage = multer.diskStorage({
-  destination: uploadDirAbsolute,
-  filename: (req, file, cb) => {
-    const uniqueName = nanoid(10);
-    const extension = file.originalname.split(`.`).pop();
-    cb(null, `${uniqueName}.${extension}`);
-  }
-});
-const upload = multer({storage});
-
-articlesRouter.get(`/category/:id`, async (req, res) => {
+articlesRouter.get(`/category/:id`, auth, async (req, res) => {
+  const {user} = req.session;
   let {page = 1, error} = req.query;
+
   page = +page;
   const limit = OFFERS_PER_PAGE;
   const offset = (page - 1) * OFFERS_PER_PAGE;
@@ -33,31 +26,34 @@ articlesRouter.get(`/category/:id`, async (req, res) => {
     {count, articles},
     categories
   ] = await Promise.all([
-    api.getArticles({limit, offset, comments: true}),
+    api.getArticles({category: id, limit, offset}),
     api.getCategories(true)
   ]);
 
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
-  res.render(`articles-by-category`, {articles, categories, id, page, totalPages, error});
+  res.render(`articles-by-category`, {articles, categories, id, page, totalPages, error, user});
 });
 
-articlesRouter.get(`/edit/:id`, async (req, res) => {
+articlesRouter.get(`/edit/:id`, [auth, author], csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {error} = req.query;
   const {id} = req.params;
-  const [article, categories] = await Promise.all([
+  const [{article}, categories] = await Promise.all([
     api.getArticle(id),
     api.getCategories()
   ]);
-  res.render(`edit-post`, {article, categories, error});
+  res.render(`edit-post`, {article, categories, error, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.get(`/add`, async (req, res) => {
+articlesRouter.get(`/add`, [auth, author], csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {error} = req.query;
   const categories = await api.getCategories();
-  res.render(`new-post`, {categories, error});
+  res.render(`new-post`, {categories, error, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
+articlesRouter.post(`/add`, [auth, author], upload.single(`upload`), csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {body, file} = req;
   const articleData = {
     picture: file && file.filename ? file.filename : ``,
@@ -66,6 +62,7 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
     title: body.title,
     categories: ensureArray(body.categories),
     date: body.date,
+    userId: user.id
   };
   try {
     await api.createArticle(articleData);
@@ -75,7 +72,8 @@ articlesRouter.post(`/add`, upload.single(`upload`), async (req, res) => {
   }
 });
 
-articlesRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+articlesRouter.post(`/edit/:id`, [auth, author], upload.single(`avatar`), csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {body, file} = req;
   const {id} = req.params;
   const articleData = {
@@ -85,6 +83,7 @@ articlesRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
     title: body.title,
     categories: ensureArray(body.categories),
     date: body.date,
+    userId: user.id
   };
   try {
     await api.updateArticle(id, articleData);
@@ -94,19 +93,25 @@ articlesRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-articlesRouter.get(`/:id`, async (req, res) => {
+articlesRouter.get(`/:id`, csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {error} = req.query;
-  const article = await api.getArticle(id, true);
-  res.render(`post`, {article, id, error});
+  const {article, comments} = await api.getArticle(id, true);
+  res.render(`post`, {article, comments, id, error, user, csrfToken: req.csrfToken()});
 });
 
-articlesRouter.post(`/:id/comments`, async (req, res) => {
+articlesRouter.post(`/:id/comments`, auth, csrfProtection, async (req, res) => {
+  const {user} = req.session;
   const {id} = req.params;
   const {body} = req;
 
   try {
-    await api.createComment(id, {text: body.comment});
+    await api.createComment(id, {
+      text: body.comment,
+      userId: user.id,
+      articleId: id
+    });
     res.redirect(`/articles/${id}`);
   } catch (error) {
     res.redirect(`/articles/${id}?error=${encodeURIComponent(error.response.data)}`);
