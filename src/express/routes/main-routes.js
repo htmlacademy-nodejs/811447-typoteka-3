@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const csrf = require(`csurf`);
 const api = require(`../api`).getAPI();
 const upload = require(`../../service/middlewares/upload`);
 const auth = require(`../../service/middlewares/auth`);
@@ -9,6 +10,7 @@ const author = require(`../../service/middlewares/author`);
 const OFFERS_PER_PAGE = 8;
 
 const mainRouter = new Router();
+const csrfProtection = csrf();
 
 mainRouter.get(`/`, async (req, res) => {
   const {user} = req.session;
@@ -19,14 +21,19 @@ mainRouter.get(`/`, async (req, res) => {
 
   const [
     {count, articles},
-    categories
+    articlesAll,
+    categories,
+    comments,
   ] = await Promise.all([
     api.getArticles({limit, offset}),
-    api.getCategories(true)
+    api.getArticles({limit: null, offset: null}),
+    api.getCategories(true),
+    api.getComments(),
   ]);
+  const articlesCommented = articlesAll.filter((article) => article.comments.length > 0).sort((a, b) => b.comments.length - a.comments.length).slice(0, 4);
 
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
-  res.render(`main`, {articles, categories, page, totalPages, user});
+  res.render(`main`, {articles, articlesCommented, categories, comments: comments.slice(0, 4), page, totalPages, user});
 });
 
 mainRouter.get(`/register`, (req, res) => {
@@ -88,10 +95,53 @@ mainRouter.get(`/search`, async (req, res) => {
   }
 });
 
-mainRouter.get(`/categories`, [auth, author], async (req, res) => {
+mainRouter.get(`/categories`, [auth, author], csrfProtection, async (req, res) => {
   const {user} = req.session;
+  const {error} = req.query;
+
   const categories = await api.getCategories(true);
-  res.render(`all-categories`, {categories, user});
+  res.render(`all-categories`, {categories, error, user, csrfToken: req.csrfToken()});
+});
+
+mainRouter.get(`/categories/:id`, [auth, author], csrfProtection, async (req, res) => {
+  const {user} = req.session;
+  const {id} = req.params;
+  const {error, del} = req.query;
+  if (del) {
+    try {
+      await api.deleteCategory(id);
+      res.redirect(`/categories`);
+    } catch (err) {
+      res.redirect(`/categories?error=${encodeURIComponent(err.response.data)}`);
+    }
+  }
+  const categories = await api.getCategories(true);
+  res.render(`all-categories`, {categories, error, user, csrfToken: req.csrfToken()});
+});
+
+mainRouter.post(`/categories`, [auth, author], csrfProtection, async (req, res) => {
+  const {body} = req;
+  const categoryData = {
+    name: body[`add-category`]
+  };
+  try {
+    await api.createCategory(categoryData);
+    res.redirect(`/categories`);
+  } catch (error) {
+    res.redirect(`/categories?error=${encodeURIComponent(error.response.data)}`);
+  }
+});
+
+mainRouter.post(`/categories/:id`, [auth, author], csrfProtection, async (req, res) => {
+  const {body} = req;
+  const {id} = req.params;
+  const categoryData = {name: body[id]};
+  try {
+    await api.updateCategory(id, categoryData);
+    res.redirect(`/categories`);
+  } catch (error) {
+    res.redirect(`/categories?error=${encodeURIComponent(error.response.data)}`);
+  }
 });
 
 module.exports = mainRouter;

@@ -58,7 +58,19 @@ html(lang='ru')
     -
       const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleString();
+        return date.toLocaleString().slice(0, -3);
+      }
+
+    -
+      const formatShortDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleString().slice(0, 10);
+      }
+
+    -
+      const truncateText = (text) => {
+        const shortText = text.length < 101 ? text : `${text.slice(0, 100)}...`;
+        return shortText;
       }
 
     .wrapper

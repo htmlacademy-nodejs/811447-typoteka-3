@@ -37,6 +37,7 @@ class CommentService {
 
     const articles = await this._Article.findAll({
       attributes: [
+        `id`,
         `title`,
       ],
       order: [

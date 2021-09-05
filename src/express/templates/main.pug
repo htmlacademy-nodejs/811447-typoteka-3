@@ -9,60 +9,37 @@ block content
       h2.visually-hidden Список тем
       ul.themes
         each category in categories
-          li(class='themes__item')
-            a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
-              sup #{category.count}
+          if category.count > 1
+            li(class='themes__item')
+              a(class='themes__item-link' href=`/articles/category/${category.id}`) #{category.name}
+                sup #{category.count}
 
     div(class='main-page__section-flex')
       section(class='main-page__hot hot')
         h2(class='hot__name') Самое обсуждаемое
           span(class='hot__icon hot__icon--fire')
-        ul(class='hot__list')
-          li(class='hot__list-item')
-            a(class='hot__list-link' href='#')
-              | Билл Гейтс впервые за два года возглавил рейтинг самых богатых людей
-              | мира по версии Bloomberg
-              sup(class='hot__link-sup') 12
-          li(class='hot__list-item')
-            a(class='hot__list-link' href='#')
-              | Сервис для аналитики Telegram-чатов Combot попал под блокировку из-за
-              | информации на служебной
-              sup(class='hot__link-sup') 15
-              | странице
-          li(class='hot__list-item hot__list-item--margin')
-            a(class='hot__list-link' href='#')
-              | Модель Кайли Дженнер продаст 51% своей компании Kylie Cosmetics
-              | владельцу Factor за $600 млн
-              sup(class='hot__link-sup') 52
-          li(class='hot__list-item hot__list-item--end')
-            a(class='hot__list-link' href='#')
-              | Tesla получила 146 тысяч предзаказов на электрический пикап Cybertruck
-              | за двое суток
-              sup(class='hot__link-sup') 153
+        if !articlesCommented.length
+          p.hot__empty Здесь пока ничего нет...
+        else
+          ul(class='hot__list')
+            each article in articlesCommented
+              li(class='hot__list-item')
+                a(class='hot__list-link' href=`/articles/${article.id}`)
+                  | #{truncateText(article.announce)}
+                  sup(class='hot__link-sup') #{article.comments.length}
+
       section(class='main-page__last last')
         h2(class='last__name') Последние комментарии
           span(class='last__icon last__icon--cloud')
-        ul(class='last__list')
-          li(class='last__list-item')
-            img(class='last__list-image' src='img/avatar-small-1.png' width='20' height='20' alt='Аватар пользователя')
-            b(class='last__list-name') Анна Артамонова
-            a(class='last__list-link' href='#')
-              | Сервис аренды жилья Airbnb стал глобальным партнером Международного
-              | олимпийского комитета
-              | (МОК) на девять лет, в течение которых пройдет пять Олимпиад, в том числе в Токио в 2020 году.
-          li(class='last__list-item')
-            img(class='last__list-image' src='img/avatar-small-2.png' width='20' height='20' alt='Аватар пользователя')
-            b(class='last__list-name') Александр Петров
-            a(class='last__list-link' href='#')
-              | Главреды «Дождя», Forbes и других СМИ попросили Роскомнадзор
-              | разъяснить штрафы за ссылки на
-              | сайты с матом
-          li(class='last__list-item last__list-item--end')
-            img(class='last__list-image' src='img/avatar-small-3.png' width='20' height='20' alt='Аватар пользователя')
-            b(class='last__list-name') Игорь Шманский
-            a(class='last__list-link' href='#')
-              | Что-то все электрокары в последнее время все на одно лицо
-              | делаются))
+        if !comments.length
+          p.hot__empty Здесь пока ничего нет...
+        else
+          ul(class='last__list')
+            each comment in comments
+              li(class='last__list-item')
+                img(class='last__list-image' src=`/img/${comment['user.avatar']}` width='20' height='20' alt='Аватар пользователя')
+                b(class='last__list-name') #{comment['user.firstName']} #{comment['user.lastName']}
+                a(class='last__list-link' href=`/articles/${comment.id}`) #{truncateText(comment['comments.text'])}
     section(class='main-page__list preview')
       h2.visually-hidden Список превью статей
       ul(class='preview__list')
@@ -74,12 +51,13 @@ block content
                   a(class='preview__breadcrumbs-link' href=`/articles/category/${category.id}`) #{category.name}
             div(class='preview__background')
               img(class='preview__background-image' src=`/img/${article.picture}` width='460' height='240' alt=article.title)
-            time(class='preview__time' datetime='2019-03-21T20:33') #{formatDate(article.createdAt)}
+            time(class='preview__time' datetime='2019-03-21T20:33') #{formatShortDate(article.createdAt)}
             h3(class='preview__name')
               a(class='preview__name-link' href=`/articles/${article.id}`) #{article.title}
             p(class='preview__text') #{article.announce}
 
-            a(class='preview__comment' href='#') Комментарии
+            a(class='preview__comment' href=`/articles/${article.id}`) Комментарии
               span(class='preview__cloud')
               b(class='preview__comment-count') #{article.comments.length}
-    +pagination(page, totalPages, 8, '?')
+    if totalPages > 1
+      +pagination(page, totalPages, 8, '?')
