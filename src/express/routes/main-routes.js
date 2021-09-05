@@ -31,9 +31,11 @@ mainRouter.get(`/`, async (req, res) => {
     api.getComments(),
   ]);
   const articlesCommented = articlesAll.filter((article) => article.comments.length > 0).sort((a, b) => b.comments.length - a.comments.length).slice(0, 4);
+  const commentsOrdered = comments.slice().sort((a, b) => b[`comments.id`] - a[`comments.id`]).slice(0, 4);
+  console.log(commentsOrdered);
 
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
-  res.render(`main`, {articles, articlesCommented, categories, comments: comments.slice(0, 4), page, totalPages, user});
+  res.render(`main`, {articles, articlesCommented, categories, comments: commentsOrdered, page, totalPages, user});
 });
 
 mainRouter.get(`/register`, (req, res) => {

@@ -73,7 +73,6 @@ module.exports = (app, articleService, commentService) => {
     const {articleId} = req.params;
 
     const comments = await commentService.findAll(articleId);
-
     res.status(HttpCode.OK).json(comments);
   });
 
@@ -95,4 +94,14 @@ module.exports = (app, articleService, commentService) => {
     return res.status(HttpCode.CREATED).json(comment);
   });
 
+  route.delete(`/comments/:id`, async (req, res) => {
+    const {id} = req.params;
+    const comment = await commentService.drop(id);
+
+    if (!comment) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found`);
+    }
+
+    return res.status(HttpCode.OK).json(comment);
+  });
 };

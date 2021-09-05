@@ -42,7 +42,7 @@ module.exports = (app, service) => {
     const {id} = req.params;
     const categories = await service.findAll(true);
     let categoryDeleted = false;
-    if (categories.find((category) => category.id === Number(id)).count < 2) {
+    if (categories.find((category) => category.id === Number(id)).count < 1) {
       categoryDeleted = await service.drop(id);
     }
     return res.status(HttpCode.OK).json(categoryDeleted);
