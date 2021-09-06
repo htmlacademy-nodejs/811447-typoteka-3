@@ -10,5 +10,5 @@ block content
           li(class='notes__list-item')
             time(class='notes__item-time' datetime=article.createdAt) #{formatShortDate(article.createdAt)}
             a(class='notes__item-text' href=`/articles/${article.id}`) #{article.title}
-            button(class='notes__button button button--close-item' type='button')
+            a(href=`/my/delete/${article.id}` class='notes__button button button--close-item')
               span.visually-hidden Закрыть строку списка

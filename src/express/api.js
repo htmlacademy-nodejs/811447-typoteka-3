@@ -44,6 +44,12 @@ class API {
     });
   }
 
+  deleteArticle(id) {
+    return this._load(`/articles/${id}`, {
+      method: HttpMethod.DELETE
+    });
+  }
+
   updateArticle(id, data) {
     return this._load(`/articles/${id}`, {
       method: HttpMethod.PUT,

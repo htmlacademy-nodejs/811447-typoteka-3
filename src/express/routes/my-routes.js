@@ -13,6 +13,13 @@ myRouter.get(`/`, [auth, author], async (req, res) => {
   res.render(`my`, {articles, user});
 });
 
+myRouter.get(`/delete/:id`, [auth, author], async (req, res) => {
+  const {id} = req.params;
+
+  await await api.deleteArticle(id);
+  res.redirect(`/my`);
+});
+
 myRouter.get(`/comments`, [auth, author], async (req, res) => {
   const {user} = req.session;
   const comments = await api.getComments();
