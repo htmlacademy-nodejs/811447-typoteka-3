@@ -5,6 +5,7 @@ const Aliase = require(`../models/aliase`);
 class ArticleService {
   constructor(sequelize) {
     this._Article = sequelize.models.Article;
+    this._ArticleCategory = sequelize.models.ArticleCategory;
     this._Comment = sequelize.models.Comment;
     this._Category = sequelize.models.Category;
     this._User = sequelize.models.User;
@@ -53,16 +54,12 @@ class ArticleService {
     return articles.map((item) => item.get());
   }
 
-  async findAllByCategory({limit, offset}) {
+  async findAllByCategory({limit, offset, category}) {
     const {count, rows} = await this._Article.findAndCountAll({
 
       limit,
       offset,
-      order: [
-        [`createdAt`, `DESC`]
-      ],
       include: [
-        Aliase.CATEGORIES,
         Aliase.COMMENTS,
         {
           model: this._User,
@@ -70,9 +67,19 @@ class ArticleService {
           attributes: {
             exclude: [`passwordHash`]
           }
-        }
+        },
+        {
+          model: this._Category,
+          as: Aliase.CATEGORIES,
+          where: {
+            id: category,
+          },
+        },
       ],
-      distinct: true
+      distinct: true,
+      order: [
+        [`createdAt`, `DESC`]
+      ],
     });
     return {count, articles: rows};
   }

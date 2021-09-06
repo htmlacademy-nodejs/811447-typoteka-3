@@ -6,17 +6,22 @@ block content
     section(class='main-page__category category')
       h1(class='category__title') Категории
       div(class='category__add-form')
-        form(action='#' method='POST')
+        form(action='/categories' method='POST')
+          input(type="hidden" name="_csrf" value=csrfToken)
           input#add-form-add-category(type='text' name='add-category' placeholder='Новая категория')
           label(for='add-form-add-category')
             span.visually-hidden Добавить категорию
           button(class='category__button button button--category' type='submit') Добавить
       ul(class='category__list')
+        if error
+          li(class='category__list-item')
+            p(class='form__error-message') #{error}
         each category in categories
           li(class='category__list-item')
-            form(action='#' method='POST')
+            form(action=`/categories/${category.id}` method='POST')
+              input(type="hidden" name="_csrf" value=csrfToken)
               input(type='text' name=category.id value=category.name id=category.id)
               label(for=category.id)
                 span.visually-hidden Редактировать категорию
               button(class='category__button button button--category' type='submit') Сохранить
-              button(class='category__button button button--category' type='button') Удалить
+              a(href=`/categories/${category.id}?del=true` class='category__button button button--category' type='button') Удалить

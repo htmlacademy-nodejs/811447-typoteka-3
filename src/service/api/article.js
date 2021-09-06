@@ -27,7 +27,6 @@ module.exports = (app, articleService, commentService) => {
 
   route.get(`/comments`, async (req, res) => {
     const result = await commentService.findAll();
-
     res.status(HttpCode.OK).json(result);
   });
 
@@ -38,6 +37,21 @@ module.exports = (app, articleService, commentService) => {
     if (!article) {
       return res.status(HttpCode.NOT_FOUND).send(`Not found with ${articleId}`);
     }
+
+    return res.status(HttpCode.OK).json(article);
+  });
+
+  route.delete(`/:articleId`, async (req, res) => {
+    const {articleId} = req.params;
+    const articleWithComments = await articleService.findOne(articleId);
+    const article = await articleService.drop(articleId);
+
+    if (!article) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found with ${articleId}`);
+    }
+    articleWithComments.comments.forEach(async (comment) => {
+      await commentService.drop(comment.id);
+    });
 
     return res.status(HttpCode.OK).json(article);
   });
@@ -58,22 +72,10 @@ module.exports = (app, articleService, commentService) => {
     return res.status(HttpCode.OK).send(`Updated`);
   });
 
-  route.delete(`/:articleId`, async (req, res) => {
-    const {articleId} = req.params;
-    const article = await articleService.drop(articleId);
-
-    if (!article) {
-      return res.status(HttpCode.NOT_FOUND).send(`Not found`);
-    }
-
-    return res.status(HttpCode.OK).json(article);
-  });
-
   route.get(`/:articleId/comments`, articleExist(articleService), async (req, res) => {
     const {articleId} = req.params;
 
     const comments = await commentService.findAll(articleId);
-
     res.status(HttpCode.OK).json(comments);
   });
 
@@ -95,4 +97,14 @@ module.exports = (app, articleService, commentService) => {
     return res.status(HttpCode.CREATED).json(comment);
   });
 
+  route.delete(`/comments/:id`, async (req, res) => {
+    const {id} = req.params;
+    const comment = await commentService.drop(id);
+
+    if (!comment) {
+      return res.status(HttpCode.NOT_FOUND).send(`Not found`);
+    }
+
+    return res.status(HttpCode.OK).json(comment);
+  });
 };

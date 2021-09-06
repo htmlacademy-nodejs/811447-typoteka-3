@@ -9,7 +9,7 @@ block content
         div(class='post__wrapper')
           div(class='post__head')
             a(href='#' class='post__backwards button button--backwards') Назад
-            time(class='post__date' datetime=article.createdAt) #{formatDate(article.createdAt)}
+            time(class='post__date' datetime=article.createdAt) #{formatShortDate(article.createdAt)}
             h2(class='post__title title title--main') #{article.title}
             ul(class='post__themes themes')
               each category in article.categories
@@ -26,7 +26,10 @@ block content
             p #{article.fullText}
       div(class='post__wrapper post__wrapper--comments')
         section(class='post__comments comments')
-          h2(class='comments__title title title--middle') Комментарии
+          if comments.length
+            h2(class='comments__title title title--middle') Комментарии
+          else
+            h2(class='comments__title title title--middle') Комментарии отсутствуют
           ul(class='comments__list')
             each comment in comments
               li(class='comments__comment')

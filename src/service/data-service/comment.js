@@ -24,7 +24,6 @@ class CommentService {
 
   async findAll() {
     const include = [
-      Aliase.CATEGORIES,
       Aliase.COMMENTS,
       {
         model: this._User,
@@ -37,12 +36,14 @@ class CommentService {
 
     const articles = await this._Article.findAll({
       attributes: [
+        `id`,
         `title`,
       ],
       order: [
         [`createdAt`, `DESC`]
       ],
       include,
+      distinct: true,
       raw: true
     });
 

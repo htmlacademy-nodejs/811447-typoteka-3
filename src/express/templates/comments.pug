@@ -13,5 +13,5 @@ block content
               time(class='publication__item-time' datetime=comment['comments.createdAt']) #{formatDate(comment['comments.createdAt'])}
             a(class='publication__item-text' href=`/articles/${comment['comments.articleId']}`) #{comment.title}
             p(class='publication__text-strong') #{comment['comments.text']}
-            button(class='publication__button button button--close-item' type='button')
+            a(href=`/my/comments/${comment['comments.id']}` class='publication__button button button--close-item')
               span.visually-hidden Закрыть строку списка

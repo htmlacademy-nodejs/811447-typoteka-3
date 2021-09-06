@@ -44,6 +44,12 @@ class API {
     });
   }
 
+  deleteArticle(id) {
+    return this._load(`/articles/${id}`, {
+      method: HttpMethod.DELETE
+    });
+  }
+
   updateArticle(id, data) {
     return this._load(`/articles/${id}`, {
       method: HttpMethod.PUT,
@@ -58,6 +64,12 @@ class API {
     });
   }
 
+  deleteComment(id) {
+    return this._load(`/articles/comments/${id}`, {
+      method: HttpMethod.DELETE
+    });
+  }
+
   createUser(data) {
     return this._load(`/user`, {
       method: HttpMethod.POST,
@@ -69,6 +81,26 @@ class API {
     return this._load(`/user/auth`, {
       method: HttpMethod.POST,
       data: {email, password}
+    });
+  }
+
+  createCategory(data) {
+    return this._load(`/categories`, {
+      method: HttpMethod.POST,
+      data
+    });
+  }
+
+  deleteCategory(id) {
+    return this._load(`/categories/${id}`, {
+      method: HttpMethod.DELETE
+    });
+  }
+
+  updateCategory(id, data) {
+    return this._load(`/categories/${id}`, {
+      method: HttpMethod.PUT,
+      data
     });
   }
 }
