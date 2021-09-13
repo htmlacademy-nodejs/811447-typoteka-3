@@ -88,14 +88,6 @@ module.exports = (app, articleService, commentService) => {
       return res.status(HttpCode.NOT_FOUND).send(`Not found`);
     }
 
-    const comments = await commentService.findAll();
-    const articles = await articleService.findAll();
-    const articlesCommented = getOrderedArticles(articles, ARTICLES_COUNT);
-    const commentsOrdered = getOrderedComments(comments, COMMENTS_COUNT);
-
-    const io = req.app.locals.socketio;
-    io.emit(`update`, {articles: articlesCommented, comments: commentsOrdered});
-
     return res.status(HttpCode.OK).json(deleted);
   });
 
@@ -121,6 +113,14 @@ module.exports = (app, articleService, commentService) => {
     if (!comment) {
       return res.status(HttpCode.NOT_FOUND).send(`Not found`);
     }
+
+    const comments = await commentService.findAll();
+    const articles = await articleService.findAll();
+    const articlesCommented = getOrderedArticles(articles, ARTICLES_COUNT);
+    const commentsOrdered = getOrderedComments(comments, COMMENTS_COUNT);
+
+    const io = req.app.locals.socketio;
+    io.emit(`update`, {articles: articlesCommented, comments: commentsOrdered});
 
     return res.status(HttpCode.OK).json(comment);
   });
