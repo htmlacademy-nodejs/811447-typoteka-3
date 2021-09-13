@@ -6,8 +6,8 @@ const api = require(`../api`).getAPI();
 const upload = require(`../../service/middlewares/upload`);
 const auth = require(`../../service/middlewares/auth`);
 const author = require(`../../service/middlewares/author`);
-
-const OFFERS_PER_PAGE = 8;
+const {ARTICLES_PER_PAGE, COMMENTS_COUNT, ARTICLES_COUNT} = require(`../../constants`);
+const {getOrderedComments, getOrderedArticles} = require(`../../utils`);
 
 const mainRouter = new Router();
 const csrfProtection = csrf();
@@ -16,8 +16,8 @@ mainRouter.get(`/`, async (req, res) => {
   const {user} = req.session;
   let {page = 1} = req.query;
   page = +page;
-  const limit = OFFERS_PER_PAGE;
-  const offset = (page - 1) * OFFERS_PER_PAGE;
+  const limit = ARTICLES_PER_PAGE;
+  const offset = (page - 1) * ARTICLES_PER_PAGE;
 
   const [
     {count, articles},
@@ -30,9 +30,9 @@ mainRouter.get(`/`, async (req, res) => {
     api.getCategories(true),
     api.getComments(),
   ]);
-  const articlesCommented = articlesAll.filter((article) => article.comments.length > 0).sort((a, b) => b.comments.length - a.comments.length).slice(0, 4);
-  const commentsOrdered = comments.slice().sort((a, b) => b[`comments.id`] - a[`comments.id`]).slice(0, 4);
-  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+  const articlesCommented = getOrderedArticles(articlesAll, ARTICLES_COUNT);
+  const commentsOrdered = getOrderedComments(comments, COMMENTS_COUNT);
+  const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
   res.render(`main`, {articles, articlesCommented, categories, comments: commentsOrdered, page, totalPages, user});
 });
 

@@ -16,7 +16,7 @@ myRouter.get(`/`, [auth, author], async (req, res) => {
 myRouter.get(`/delete/:id`, [auth, author], async (req, res) => {
   const {id} = req.params;
 
-  await await api.deleteArticle(id);
+  await api.deleteArticle(id);
   res.redirect(`/my`);
 });
 
@@ -31,7 +31,7 @@ myRouter.get(`/comments/:id`, [auth, author], async (req, res) => {
   const {id} = req.params;
 
   try {
-    await await api.deleteComment(id);
+    await api.deleteComment(id);
     res.redirect(`/my/comments`);
   } catch (error) {
     res.redirect(`/my/comments?error=${encodeURIComponent(error.response.data)}`);

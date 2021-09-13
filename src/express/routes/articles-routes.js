@@ -4,7 +4,7 @@ const {Router} = require(`express`);
 const csrf = require(`csurf`);
 const api = require(`../api`).getAPI();
 const {ensureArray} = require(`../../utils`);
-const {OFFERS_PER_PAGE} = require(`../../constants`);
+const {ARTICLES_PER_PAGE} = require(`../../constants`);
 const auth = require(`../../service/middlewares/auth`);
 const author = require(`../../service/middlewares/author`);
 const upload = require(`../../service/middlewares/upload`);
@@ -18,8 +18,8 @@ articlesRouter.get(`/category/:id`, auth, async (req, res) => {
   let {page = 1, error} = req.query;
 
   page = +page;
-  const limit = OFFERS_PER_PAGE;
-  const offset = (page - 1) * OFFERS_PER_PAGE;
+  const limit = ARTICLES_PER_PAGE;
+  const offset = (page - 1) * ARTICLES_PER_PAGE;
 
   const {id} = req.params;
   const [
@@ -30,7 +30,7 @@ articlesRouter.get(`/category/:id`, auth, async (req, res) => {
     api.getCategories(true)
   ]);
 
-  const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
+  const totalPages = Math.ceil(count / ARTICLES_PER_PAGE);
   res.render(`articles-by-category`, {articles, categories, id, page, totalPages, error, user});
 });
 
@@ -112,6 +112,7 @@ articlesRouter.post(`/:id/comments`, auth, csrfProtection, async (req, res) => {
       userId: user.id,
       articleId: id
     });
+
     res.redirect(`/articles/${id}`);
   } catch (error) {
     res.redirect(`/articles/${id}?error=${encodeURIComponent(error.response.data)}`);

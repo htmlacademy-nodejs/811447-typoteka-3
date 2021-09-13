@@ -32,4 +32,6 @@ module.exports.Env = {
   PRODUCTION: `production`
 };
 
-module.exports.OFFERS_PER_PAGE = 8;
+module.exports.ARTICLES_PER_PAGE = 8;
+module.exports.ARTICLES_COUNT = 4;
+module.exports.COMMENTS_COUNT = 4;
