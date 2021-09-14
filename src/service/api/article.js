@@ -1,7 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {HttpCode} = require(`../../constants`);
+const {HttpCode, COMMENTS_COUNT, ARTICLES_COUNT} = require(`../../constants`);
+const {getOrderedComments, getOrderedArticles} = require(`../../utils`);
 const articleValidator = require(`../middlewares/article-validator`);
 const commentValidator = require(`../middlewares/comment-validator`);
 const articleExist = require(`../middlewares/article-exist`);
@@ -90,9 +91,17 @@ module.exports = (app, articleService, commentService) => {
     return res.status(HttpCode.OK).json(deleted);
   });
 
-  route.post(`/:articleId/comments`, [articleExist(articleService), commentValidator], (req, res) => {
+  route.post(`/:articleId/comments`, [articleExist(articleService), commentValidator], async (req, res) => {
     const {article} = res.locals;
-    const comment = commentService.create(article.id, req.body);
+    const comment = await commentService.create(article.id, req.body);
+
+    const comments = await commentService.findAll();
+    const articles = await articleService.findAll();
+    const articlesCommented = getOrderedArticles(articles, ARTICLES_COUNT);
+    const commentsOrdered = getOrderedComments(comments, COMMENTS_COUNT);
+
+    const io = req.app.locals.socketio;
+    io.emit(`update`, {articles: articlesCommented, comments: commentsOrdered});
 
     return res.status(HttpCode.CREATED).json(comment);
   });
@@ -104,6 +113,14 @@ module.exports = (app, articleService, commentService) => {
     if (!comment) {
       return res.status(HttpCode.NOT_FOUND).send(`Not found`);
     }
+
+    const comments = await commentService.findAll();
+    const articles = await articleService.findAll();
+    const articlesCommented = getOrderedArticles(articles, ARTICLES_COUNT);
+    const commentsOrdered = getOrderedComments(comments, COMMENTS_COUNT);
+
+    const io = req.app.locals.socketio;
+    io.emit(`update`, {articles: articlesCommented, comments: commentsOrdered});
 
     return res.status(HttpCode.OK).json(comment);
   });

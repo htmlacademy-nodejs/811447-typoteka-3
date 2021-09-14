@@ -12,5 +12,5 @@ block content
             button(class='search__button button button--transparent' type='submit') Найти
           each result in results
             div(class='search__result')
-              time(class='search__date' datetime='2019-03-21T20:33') #{formatShortDate(result.createdAt)}
-              a(class='search__link') #{result.title}
+              time(class='search__date' datetime=result.createdAt) #{formatShortDate(result.createdAt)}
+              a(href=`/articles/${result.id}` class='search__link') #{result.title}

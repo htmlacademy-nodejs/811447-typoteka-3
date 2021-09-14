@@ -1,11 +1,13 @@
 'use strict';
 
 const express = require(`express`);
+const http = require(`http`);
 const fs = require(`fs`).promises;
 const {HttpCode, ExitCode} = require(`../../constants`);
 const routes = require(`../api`);
 const {getLogger} = require(`../lib/logger`);
 const sequelize = require(`../lib/sequelize`);
+const socket = require(`../lib/socket`);
 
 const DEFAULT_PORT = 3000;
 const FILENAME = `mocks.json`;
@@ -14,6 +16,10 @@ const logger = getLogger({name: `api`});
 
 const app = express();
 app.use(express.json());
+const server = http.createServer(app);
+
+const io = socket(server);
+app.locals.socketio = io;
 
 app.get(`/posts`, async (req, res) => {
   try {
@@ -53,7 +59,7 @@ module.exports = {
     const port = Number.parseInt(customPort, 10) || DEFAULT_PORT;
 
     try {
-      app.listen(port, (err) => {
+      server.listen(port, (err) => {
         if (err) {
           return logger.error(`An error occurred on server creation: ${err.message}`);
         }

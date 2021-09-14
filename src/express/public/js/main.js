@@ -322,8 +322,11 @@ if (typeof window === 'undefined' || typeof window.getComputedStyle !== 'functio
   };
 }
 
-// if (textarea) {
-//   textarea.forEach(element => {
-//     autosize(element);
-//   });
-// }
+const buttonBack = document.querySelector('.button--backwards');
+
+if (buttonBack) {
+  buttonBack.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    history.back();
+  })
+}
