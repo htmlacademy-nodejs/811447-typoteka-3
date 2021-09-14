@@ -2,7 +2,7 @@
 
 const passwordUtils = require(`./service/lib/password`);
 
-module.exports.mockUsers = [
+const mockUsers = [
   {
     firstName: `Иван`,
     lastName: `Иванов`,
@@ -19,13 +19,13 @@ module.exports.mockUsers = [
   }
 ];
 
-module.exports.mockCategories = [
+const mockCategories = [
   `IT`,
   `Кино`,
   `Музыка`
 ];
 
-module.exports.mockArticles = [
+const mockArticles = [
   {
     "userId": 1,
     "picture": `forest`,
@@ -93,3 +93,9 @@ module.exports.mockArticles = [
     ]
   }
 ];
+
+module.exports = {
+  mockUsers,
+  mockCategories,
+  mockArticles
+};

@@ -1,16 +1,20 @@
 'use strict';
 
-module.exports.DEFAULT_COMMAND = `--help`;
+const DEFAULT_COMMAND = `--help`;
 
-module.exports.USER_ARGV_INDEX = 2;
-module.exports.MAX_ID_LENGTH = 6;
+const USER_ARGV_INDEX = 2;
+const MAX_ID_LENGTH = 6;
 
-module.exports.ExitCode = {
+const ARTICLES_PER_PAGE = 8;
+const ARTICLES_COUNT = 4;
+const COMMENTS_COUNT = 4;
+
+const ExitCode = {
   ERROR: 1,
   SUCCESS: 0,
 };
 
-module.exports.HttpCode = {
+const HttpCode = {
   OK: 200,
   CREATED: 201,
   BAD_REQUEST: 400,
@@ -20,18 +24,27 @@ module.exports.HttpCode = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-module.exports.HttpMethod = {
+const HttpMethod = {
   GET: `GET`,
   POST: `POST`,
   PUT: `PUT`,
   DELETE: `DELETE`
 };
 
-module.exports.Env = {
+const Env = {
   DEVELOPMENT: `development`,
   PRODUCTION: `production`
 };
 
-module.exports.ARTICLES_PER_PAGE = 8;
-module.exports.ARTICLES_COUNT = 4;
-module.exports.COMMENTS_COUNT = 4;
+module.exports = {
+  DEFAULT_COMMAND,
+  USER_ARGV_INDEX,
+  MAX_ID_LENGTH,
+  ARTICLES_PER_PAGE,
+  ARTICLES_COUNT,
+  COMMENTS_COUNT,
+  ExitCode,
+  HttpCode,
+  HttpMethod,
+  Env
+};
