@@ -1,7 +1,6 @@
 'use strict';
-const {getLogger} = require(`./lib/logger`);
-const logger = getLogger({name: `service`});
 const {Cli} = require(`./cli`);
+const {getLogger} = require(`./lib/logger`);
 
 const {
   DEFAULT_COMMAND,
@@ -9,6 +8,7 @@ const {
   ExitCode
 } = require(`../constants`);
 
+const logger = getLogger({name: `service`});
 const userArguments = process.argv.slice(USER_ARGV_INDEX);
 const [userCommand] = userArguments;
 

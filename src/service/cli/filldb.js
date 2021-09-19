@@ -1,12 +1,10 @@
 'use strict';
 const fs = require(`fs`).promises;
-const {getLogger} = require(`../lib/logger`);
-const logger = getLogger({name: `generate`});
 const initDatabase = require(`../lib/init-db`);
 const sequelize = require(`../lib/sequelize`);
 const {ExitCode} = require(`../../constants`);
 const passwordUtils = require(`../lib/password`);
-
+const {getLogger} = require(`../lib/logger`);
 const {
   getRandomInt,
   shuffle
@@ -18,8 +16,9 @@ const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
 const PICTURES = [`forest.jpg`, `sea.jpg`, `skyscraper.jpg`];
-
 const MAX_COMMENTS = 4;
+
+const logger = getLogger({name: `generate`});
 
 const readContent = async (filePath) => {
   try {
