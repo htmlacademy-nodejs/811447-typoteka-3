@@ -1,9 +1,10 @@
 "use strict";
 
 const {getLogger} = require(`./logger`);
-const logger = getLogger({name: `initDB`});
-const defineModels = require(`../models`);
+const defineModels = require(`../models/models`);
 const Aliase = require(`../models/aliase`);
+
+const logger = getLogger({name: `initDB`});
 
 module.exports = async (sequelize, {categories, articles, users}) => {
   const {Category, Article, User} = defineModels(sequelize);

@@ -5,12 +5,7 @@ const article = require(`./article`);
 const search = require(`./search`);
 const user = require(`./user`);
 const sequelize = require(`../lib/sequelize`);
-const defineModels = require(`../models`);
-
-const app = new Router();
-
-defineModels(sequelize);
-
+const defineModels = require(`../models/models`);
 const {
   CategoryService,
   SearchService,
@@ -18,6 +13,10 @@ const {
   CommentService,
   UserService
 } = require(`../data-service`);
+
+const app = new Router();
+
+defineModels(sequelize);
 
 (async () => {
   category(app, new CategoryService(sequelize));

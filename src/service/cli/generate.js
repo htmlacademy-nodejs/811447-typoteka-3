@@ -3,7 +3,6 @@ const fs = require(`fs`).promises;
 const {nanoid} = require(`nanoid`);
 const {MAX_ID_LENGTH} = require(`../../constants`);
 const {getLogger} = require(`../lib/logger`);
-const logger = getLogger({name: `generate`});
 
 const {
   getRandomInt,
@@ -20,6 +19,8 @@ const FILE_CATEGORIES_PATH = `./data/categories.txt`;
 const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 const MAX_COMMENTS = 4;
+
+const logger = getLogger({name: `generate`});
 
 const readContent = async (filePath) => {
   try {
