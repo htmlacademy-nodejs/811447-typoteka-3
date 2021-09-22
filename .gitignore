@@ -21,7 +21,7 @@ mocks.json
 src/service/logs
 
 # Загруженные файлы
-src/express/upload
+# src/express/upload
 
 # Файл с переменными окружения
 .env
